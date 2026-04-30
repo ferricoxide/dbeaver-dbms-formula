@@ -20,10 +20,22 @@
 {#- Define the driver path within the skeleton directory #}
 {%- set skel_dbeaver_data = '/etc/skel/.local/share/DBeaverData' %}
 {%- set skel_dbeaver_drivers = skel_dbeaver_data ~ '/drivers' %}
-
+{%- set skel_settings_dir = skel_dbeaver_data ~ '/workspace6/.metadata/.plugins/org.eclipse.core.runtime/.settings' %}
+{%- set pref_file = skel_settings_dir ~ '/org.jkiss.dbeaver.core.prefs' %}
 
 include:
   - {{ sls_package_install }}
+
+Disable DBeaver Update Checks:
+  file.managed:
+    - contents: |
+        ui.check.update=false
+    - group: root
+    - mode: 0644
+    - name: '{{ pref_file }}'
+    - require:
+      - file: Ensure DBeaver Settings Directory in Skel
+    - user: root
 
 Ensure DBeaver Driver Path in Skel:
   file.directory:
@@ -31,6 +43,14 @@ Ensure DBeaver Driver Path in Skel:
     - makedirs: True
     - mode: 0755
     - name: '{{ skel_dbeaver_data }}'
+    - user: root
+
+Ensure DBeaver Settings Directory in Skel:
+  file.directory:
+    - group: root
+    - makedirs: True
+    - mode: 0755
+    - name: '{{ skel_settings_dir }}'
     - user: root
 
 Fix the dbeaver.ini file:
