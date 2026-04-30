@@ -22,6 +22,7 @@
 {%- set skel_dbeaver_drivers = skel_dbeaver_data ~ '/drivers' %}
 {%- set skel_settings_dir = skel_dbeaver_data ~ '/workspace6/.metadata/.plugins/org.eclipse.core.runtime/.settings' %}
 {%- set pref_file = skel_settings_dir ~ '/org.jkiss.dbeaver.core.prefs' %}
+{%- set desktop_file = "/usr/share/applications/" ~ dbeaver_dbms.pkg.name ~ ".desktop" %}
 
 include:
   - {{ sls_package_install }}
@@ -61,6 +62,15 @@ Ensure dbeaver command in PATH:
     - require:
       - pkg: Install dBeaver RPM
 
+Fix Desktop Entry Exec Path:
+  file.replace:
+    - name: '{{ desktop_file }}'
+    - onlyif: 'test -f {{ desktop_file }}'
+    - pattern: '^Exec=.*'
+    - repl: 'Exec=/usr/local/bin/dbeaver'
+    - require:
+      - file: Ensure dbeaver command in PATH
+
 Fix the dbeaver.ini file:
   file.replace:
     - backup: False
@@ -98,3 +108,10 @@ Standardize DBeaver Memory:
     - repl: '-Xmx2G'  {# Adjust this based on your instance size #}
     - require:
       - pkg: Install dBeaver RPM
+
+Update Desktop Database:
+  cmd.run:
+    - name: update-desktop-database /usr/share/applications
+    - onchanges:
+      - file: Fix Desktop Entry Exec Path
+    - onlyif: 'which update-desktop-database'
