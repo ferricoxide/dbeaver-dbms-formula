@@ -9,20 +9,8 @@
 
 include:
   - {{ sls_package_install }}
-
-dbeaver-dbms-config-file-file-managed:
-  file.managed:
-    - name: {{ dbeaver_dbms.config }}
-    - source: {{ files_switch(['example.tmpl'],
-                              lookup='dbeaver-dbms-config-file-file-managed'
-                 )
-              }}
-    - mode: 644
-    - user: root
-    - group: {{ dbeaver_dbms.rootgroup }}
-    - makedirs: True
-    - template: jinja
-    - require:
-      - sls: {{ sls_package_install }}
-    - context:
-        dbeaver_dbms: {{ dbeaver_dbms | json }}
+{%- if grains.kernel == "Linux" %}
+  - dbeaver-dbms.config.lin_file
+{%- elif grains.kernel == "Windows" %}
+  - dbeaver-dbms.config.win_file
+{%- endif %}
