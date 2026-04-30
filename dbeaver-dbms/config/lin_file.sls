@@ -101,6 +101,25 @@ Restore SELinux Context on DBeaver Drivers:
     - require:
       - pkg: Install dBeaver RPM
 
+Set Global DBeaver Preferences:
+  file.managed:
+    - name: '{{ pref_file }}'
+    - user: root
+    - group: root
+    - mode: 0644
+    - contents: |
+        ui.check.update=false
+        # Prevent accidental data loss by making "Production" the default connection type
+        connection.types.default=production
+
+        # Automatically save scripts on exit/crash
+        editor.scripts.save_on_close=true
+
+        # Ensure SQL formatting uses spaces instead of tabs
+        sql.format.indent_type=space
+    - require:
+      - file: Ensure DBeaver Settings Directory in Skel
+
 Standardize DBeaver Memory:
   file.replace:
     - name: '{{ ini_file_path }}'
