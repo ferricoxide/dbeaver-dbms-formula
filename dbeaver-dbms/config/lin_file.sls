@@ -19,7 +19,7 @@ Fix the dbeaver.ini file:
     - pattern: '(?<!/bin/java\n)^-vmargs'
     - repl: |
         -vm
-        /usr/lib/jvm/java-21-openjdk/bin/java
+        /usr/lib/jvm/java-{{ dbeaver_dbms.java_version }}-openjdk/bin/java
         -vmargs
     - flags: [
         'MULTILINE'
