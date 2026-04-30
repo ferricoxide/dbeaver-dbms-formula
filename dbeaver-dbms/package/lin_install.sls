@@ -23,15 +23,6 @@
     {%- set ignore_reason = "Pillar requested Java " ~ requested_ver ~ ", but dBeaver requires >= " ~ min_supported ~ ". Installing Java " ~ latest_available ~ " instead." %}
 {%- endif %}
 
-{%- if ignore_reason %}
-Notify Java Version Override:
-  test.show_notification:
-    - require_in:
-      - pkg: Install OpenJDK for dBeaver
-    - text: |
-        {{ ignore_reason }}
-{%- endif %}
-
 Clean-up Staged dBeaver RPM:
   file.absent:
     - name: '{{ staging_loc }}'
@@ -52,6 +43,10 @@ Download dBeaver RPM:
     {%- endif %}
     - source: '{{ dbeaver_dbms.pkg.download_uri }}'
 
+Install OpenJDK for dBeaver:
+  pkg.installed:
+    - name: {{ java_pkg_prefix ~ install_ver ~ java_pkg_suffix }}
+
 Install dBeaver RPM:
   pkg.installed:
     - name: '{{ dbeaver_dbms.pkg.name }}'
@@ -61,6 +56,11 @@ Install dBeaver RPM:
     - sources:
       - {{ dbeaver_dbms.pkg.name }}: '{{ staging_loc }}'
 
-Install OpenJDK for dBeaver:
-  pkg.installed:
-    - name: {{ java_pkg_prefix ~ install_ver ~ java_pkg_suffix }}
+{%- if ignore_reason %}
+Notify Java Version Override:
+  test.show_notification:
+    - require_in:
+      - pkg: Install OpenJDK for dBeaver
+    - text: |
+        {{ ignore_reason }}
+{%- endif %}
