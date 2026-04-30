@@ -13,7 +13,17 @@
 ---
 values:
   pkg:
-    name: dbeaver-dbms-redhat
-    download_uri: https://dbeaver.io/files/dbeaver-ce-latest-linux-x86_64.rpm
+    # Default to community edition RPM-name, but any of:
+    # * Light:      dbeaver-le
+    # * Enterprise: dbeaver-ee
+    # * Ultimate:   dbeaver-ue
+    # Are valid
+    name: 'dbeaver-ce'
+    # Default to community edition URL, but any of:
+    # * Light:      https://dbeaver.com/files/dbeaver-le-latest-linux-x86_64.rpm
+    # * Enterprise: https://dbeaver.com/files/dbeaver-ee-latest-linux-x86_64.rpm
+    # * Ultimate:   https://dbeaver.com/files/dbeaver-ue-latest-linux-x86_64.rpm
+    # Are valid
+    download_uri: 'https://dbeaver.io/files/dbeaver-ce-latest-linux-x86_64.rpm'
   config_dir: '/etc/dbeaver-dbms'
 ...
