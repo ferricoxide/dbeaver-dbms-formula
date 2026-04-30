@@ -37,12 +37,6 @@ Disable DBeaver Update Checks:
       - file: Ensure DBeaver Settings Directory in Skel
     - user: root
 
-Enable Java Execmem for dBeaver:
-  selinux.boolean:
-    - name: allow_execmem
-    - value: True
-    - persist: True
-
 Ensure DBeaver Driver Path in Skel:
   file.directory:
     - group: root
@@ -58,6 +52,14 @@ Ensure DBeaver Settings Directory in Skel:
     - mode: 0755
     - name: '{{ skel_settings_dir }}'
     - user: root
+
+Ensure dbeaver command in PATH:
+  file.symlink:
+    - name: /usr/local/bin/dbeaver
+    - target: '/usr/share/{{ dbeaver_dbms.pkg.name }}/dbeaver'
+    - force: True
+    - require:
+      - pkg: Install dBeaver RPM
 
 Fix the dbeaver.ini file:
   file.replace:
@@ -86,5 +88,13 @@ Restore SELinux Context on DBeaver Drivers:
     - name: file.restorecon
     - path: /usr/share/{{ dbeaver_dbms.pkg.name }}/drivers
     - recursive: True
+    - require:
+      - pkg: Install dBeaver RPM
+
+Standardize DBeaver Memory:
+  file.replace:
+    - name: '{{ ini_file_path }}'
+    - pattern: '^-Xmx.*'
+    - repl: '-Xmx2G'  {# Adjust this based on your instance size #}
     - require:
       - pkg: Install dBeaver RPM
