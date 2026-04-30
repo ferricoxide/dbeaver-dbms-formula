@@ -18,7 +18,9 @@
 {%- set ini_path_end = "/dbeaver.ini" %}
 {%- set ini_file_path = ini_path_prefix ~ "/" ~ dbeaver_dbms.pkg.name ~ ini_path_end %}
 {#- Define the driver path within the skeleton directory #}
-{%- set skel_dbeaver_drivers = '/etc/skel/.local/share/DBeaverData/drivers' %}
+{%- set skel_dbeaver_data = '/etc/skel/.local/share/DBeaverData' %}
+{%- set skel_dbeaver_drivers = skel_dbeaver_data ~ '/drivers' %}
+
 
 include:
   - {{ sls_package_install }}
@@ -28,7 +30,7 @@ Ensure DBeaver Driver Path in Skel:
     - group: root
     - makedirs: True
     - mode: 0755
-    - name: '{{ skel_dbeaver_drivers }}'
+    - name: '{{ skel_dbeaver_data }}'
     - user: root
 
 Fix the dbeaver.ini file:
