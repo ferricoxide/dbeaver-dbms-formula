@@ -17,19 +17,38 @@
 {%- set ini_path_prefix = "/usr/share" %}
 {%- set ini_path_end = "/dbeaver.ini" %}
 {%- set ini_file_path = ini_path_prefix ~ "/" ~ dbeaver_dbms.pkg.name ~ ini_path_end %}
+{#- Define the driver path within the skeleton directory #}
+{%- set skel_dbeaver_drivers = '/etc/skel/.local/share/DBeaverData/drivers' %}
 
 include:
   - {{ sls_package_install }}
 
+Ensure DBeaver Driver Path in Skel:
+  file.directory:
+    - group: root
+    - makedirs: True
+    - mode: 0755
+    - name: '{{ skel_dbeaver_drivers }}'
+    - user: root
+
 Fix the dbeaver.ini file:
   file.replace:
+    - backup: False
+    - flags: [
+        'MULTILINE'
+      ]
     - name: '{{ ini_file_path }}'
     - pattern: '(?<!/bin/java\n)^-vmargs'
     - repl: |
         -vm
         /usr/lib/jvm/java-{{ installed_jdk_ver }}-openjdk/bin/java
         -vmargs
-    - flags: [
-        'MULTILINE'
-      ]
-    - backup: False
+
+Link Global Drivers to Skel:
+  file.symlink:
+    - force: True
+    - name: '{{ skel_dbeaver_drivers }}'
+    - require:
+      - file: Ensure DBeaver Driver Path in Skel
+      - pkg: Install dBeaver RPM
+    - target: '/usr/share/{{ dbeaver_dbms.pkg.name }}/drivers'
