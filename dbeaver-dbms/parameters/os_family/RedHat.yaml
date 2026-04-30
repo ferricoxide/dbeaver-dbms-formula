@@ -26,4 +26,5 @@ values:
     # Are valid
     download_uri: 'https://dbeaver.io/files/dbeaver-ce-latest-linux-x86_64.rpm'
   config_dir: '/etc/dbeaver-dbms'
+  java_version: '25'
 ...

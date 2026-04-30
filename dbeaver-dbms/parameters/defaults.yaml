@@ -8,6 +8,7 @@ values:
     name: dbeaver-dbms
     download_uri: ''
     download_sig: ''
+  java_version: ''
   rootgroup: root
   config_dir: ''
   service:
