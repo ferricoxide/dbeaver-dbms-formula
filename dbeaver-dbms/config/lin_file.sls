@@ -120,6 +120,12 @@ Set Global DBeaver Preferences:
     - mode: 0644
     - contents: |
         ui.check.update=false
+
+        # Bypass the "What's New" tab and initial tips
+        ui.show.tips.at.startup=false
+        ui.check.version=false
+        workspace.show.version=false
+
         # Prevent accidental data loss by making "Production" the default connection type
         connection.types.default=production
 
