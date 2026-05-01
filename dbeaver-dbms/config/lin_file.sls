@@ -27,17 +27,6 @@
 include:
   - {{ sls_package_install }}
 
-Disable DBeaver Update Checks:
-  file.managed:
-    - contents: |
-        ui.check.update=false
-    - group: root
-    - mode: 0644
-    - name: '{{ pref_file }}'
-    - require:
-      - file: Ensure DBeaver Settings Directory in Skel
-    - user: root
-
 Ensure DBeaver Driver Path in Skel:
   file.directory:
     - group: root
