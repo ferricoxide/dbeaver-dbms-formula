@@ -137,6 +137,9 @@ Set Global DBeaver Preferences:
 
         # Force external browser to bypass RHEL 9 WebKit/GTK compatibility gaps
         browser.external=true
+
+        # Force simple password storage to avoid GNOME Keyring initialization loops on RHEL 9
+        org.jkiss.dbeaver.core.auth.storage=password
     - require:
       - file: Ensure DBeaver Settings Directory in Skel
 
