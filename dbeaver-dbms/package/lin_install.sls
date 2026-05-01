@@ -61,9 +61,10 @@ Install dBeaver RPM:
 Install non-enumerated DBeaver GUI Dependencies:
   pkg.installed:
     - pkgs:
-      - webkit2gtk3
-      - libsecret
       - libXtst
+      - liberation-mono-fonts
+      - libsecret
+      - webkit2gtk3
     - require_in:
       - pkg: 'Install dBeaver RPM'
 
