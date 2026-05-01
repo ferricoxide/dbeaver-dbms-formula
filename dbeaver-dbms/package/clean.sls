@@ -9,10 +9,7 @@
 include:
   - {{ sls_config_clean }}
 {%- if grains.kernel == "Linux" %}
-  - .lin_install
+  - .lin_clean
 {%- elif grains.kernel == "Windows" %}
-  - .win_pre-install
-  - .win_install
-  - .win_post-install
+  - .win_clean
 {%- endif %}
-
