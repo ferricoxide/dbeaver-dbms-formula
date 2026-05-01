@@ -117,6 +117,9 @@ Set Global DBeaver Preferences:
 
         # Ensure SQL formatting uses spaces instead of tabs
         sql.format.indent_type=space
+
+        # Force external browser to bypass RHEL 9 WebKit/GTK compatibility gaps
+        browser.external=true
     - require:
       - file: Ensure DBeaver Settings Directory in Skel
 
