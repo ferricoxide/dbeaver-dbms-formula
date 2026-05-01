@@ -20,9 +20,11 @@
 {#- Define the driver path within the skeleton directory #}
 {%- set skel_dbeaver_data = '/etc/skel/.local/share/DBeaverData' %}
 {%- set skel_dbeaver_drivers = skel_dbeaver_data ~ '/drivers' %}
-{%- set skel_settings_dir = skel_dbeaver_data ~ '/workspace6/.metadata/.plugins/org.eclipse.core.runtime/.settings' %}
+{%- set skel_metadata_dir = skel_dbeaver_data ~ '/workspace6/.metadata' %}
+{%- set skel_settings_dir = skel_metadata_dir ~ '/.plugins/org.eclipse.core.runtime/.settings' %}
 {%- set pref_file = skel_settings_dir ~ '/org.jkiss.dbeaver.core.prefs' %}
 {%- set desktop_file = "/usr/share/applications/" ~ dbeaver_dbms.pkg.name ~ ".desktop" %}
+{%- set version_file = skel_metadata_dir ~ '/version.txt' %}
 
 include:
   - {{ sls_package_install }}
@@ -34,6 +36,16 @@ Ensure DBeaver Driver Path in Skel:
     - mode: 0755
     - name: '{{ skel_dbeaver_data }}'
     - user: root
+
+Ensure DBeaver Metadata Directory in Skel:
+  file.directory:
+    - name: '{{ skel_metadata_dir }}'
+    - user: root
+    - group: root
+    - mode: 0755
+    - makedirs: True
+    - require:
+      - file: Ensure DBeaver Driver Path in Skel
 
 Ensure DBeaver Settings Directory in Skel:
   file.directory:
@@ -81,6 +93,16 @@ Link Global Drivers to Skel:
       - file: Ensure DBeaver Driver Path in Skel
       - pkg: Install dBeaver RPM
     - target: '/usr/share/{{ dbeaver_dbms.pkg.name }}/drivers'
+
+Pre-initialize Workspace Version:
+  file.managed:
+    - name: '{{ version_file }}'
+    - user: root
+    - group: root
+    - mode: 0644
+    - contents: '2'  # DBeaver workspace version '2' is standard for 23.x and 24.x
+    - require:
+      - file: Ensure DBeaver Metadata Directory in Skel
 
 Restore SELinux Context on DBeaver Drivers:
   module.run:
