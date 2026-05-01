@@ -18,4 +18,4 @@ Remove DBeaver Symlink from PATH:
 Update Desktop Database after Config Removal:
   cmd.run:
     - name: update-desktop-database /usr/share/applications
-    - onlyif: 'which update-desktop-database'`
+    - onlyif: 'which update-desktop-database'
