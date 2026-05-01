@@ -46,6 +46,8 @@ Download dBeaver RPM:
 Install OpenJDK for dBeaver:
   pkg.installed:
     - name: {{ java_pkg_prefix ~ install_ver ~ java_pkg_suffix }}
+    - require:
+      - pkg: 'Install non-enumerated DBeaver GUI Dependencies'
 
 Install dBeaver RPM:
   pkg.installed:
@@ -55,6 +57,15 @@ Install dBeaver RPM:
     - skip_verify: True
     - sources:
       - {{ dbeaver_dbms.pkg.name }}: '{{ staging_loc }}'
+
+Install non-enumerated DBeaver GUI Dependencies:
+  pkg.installed:
+    - pkgs:
+      - webkit2gtk3
+      - libsecret
+      - libXtst
+    - require_in:
+      - pkg: 'Install dBeaver RPM'
 
 {%- if ignore_reason %}
 Notify Java Version Override:
