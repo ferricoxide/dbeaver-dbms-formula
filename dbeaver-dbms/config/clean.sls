@@ -3,14 +3,13 @@
 
 {#- Get the `tplroot` from `tpldir` #}
 {%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_service_clean = tplroot ~ '.service.clean' %}
+{%- set sls_package_install = tplroot ~ '.package.install' %}
 {%- from tplroot ~ "/map.jinja" import mapdata as dbeaver_dbms with context %}
+{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
 
 include:
-  - {{ sls_service_clean }}
-
-dbeaver-dbms-config-clean-file-absent:
-  file.absent:
-    - name: {{ dbeaver_dbms.config }}
-    - require:
-      - sls: {{ sls_service_clean }}
+{%- if grains.kernel == "Linux" %}
+  - dbeaver-dbms.config.lin_clean
+{%- elif grains.kernel == "Windows" %}
+  - dbeaver-dbms.config.win_clean
+{%- endif %}
