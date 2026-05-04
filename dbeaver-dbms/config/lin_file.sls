@@ -25,6 +25,12 @@
 {%- set pref_file = skel_settings_dir ~ '/org.jkiss.dbeaver.core.prefs' %}
 {%- set desktop_file = "/usr/share/applications/" ~ dbeaver_dbms.pkg.name ~ ".desktop" %}
 {%- set version_file = skel_metadata_dir ~ '/version.txt' %}
+{%- set dbeaver_java_flags = [
+    '-Djava.security.egd=file:/dev/./urandom',
+    '--enable-native-access=ALL-UNNAMED',
+    '--add-opens=java.base/sun.security.action=ALL-UNNAMED',
+    '--add-opens=java.base/java.lang=ALL-UNNAMED'
+] %}
 
 include:
   - {{ sls_package_install }}
@@ -61,6 +67,17 @@ Ensure DBeaver Settings Directory in Skel:
     - mode: 0755
     - name: '{{ skel_settings_dir }}'
     - user: root
+
+{% for flag in dbeaver_java_flags %}
+Ensure DBeaver flag {{ flag }}:
+  file.replace:
+    - name: '{{ ini_file_path }}'
+    - pattern: '^{{ flag | replace(".", "\.") | replace("/", "\/") }}$'
+    - repl: '{{ flag }}'
+    - append_if_not_found: True
+    - require:
+      - file: Standardize DBeaver Memory
+{% endfor %}
 
 Ensure dbeaver command in PATH:
   file.symlink:
@@ -138,16 +155,12 @@ Set Global DBeaver Preferences:
       - file: Ensure DBeaver Settings Directory in Skel
 
 Standardize DBeaver Memory:
-file.append:
-  - name: '{{ ini_file_path }}'
-  - text: |
-      -Xmx2G
-      -Djava.security.egd=file:/dev/./urandom
-      --add-opens=java.base/sun.security.action=ALL-UNNAMED
-      --add-opens=java.base/java.lang=ALL-UNNAMED
-      --enable-native-access=ALL-UNNAMED
-  - require:
-    - pkg: Install dBeaver RPM
+  file.replace:
+    - name: '{{ ini_file_path }}'
+    - pattern: '^-Xmx.*'
+    - repl: '-Xmx2G'
+    - require:
+      - pkg: Install dBeaver RPM
 
 Update Desktop Database:
   cmd.run:
