@@ -26,9 +26,9 @@
         file.managed:
           - name: /etc/yyy/zzz.conf
           - source: {{ files_switch(
-                         ["/etc/yyy/zzz.conf", "/etc/yyy/zzz.conf.jinja"],
-                         lookup="Deploy configuration",
-                       ) }}
+                          ["/etc/yyy/zzz.conf", "/etc/yyy/zzz.conf.jinja"],
+                          lookup="Deploy configuration",
+                        ) }}
           - template: jinja
     In a minion with id=theminion and os_family=RedHat, it's going to be
     rendered as:
