@@ -1,0 +1,21 @@
+dbeaver-dbms
+  lookup:
+    pkg:
+      name:           # Optional: Overrides the default value, 'dbeaver-ce'. May
+                      # be overridden with any of:
+                      # * 'dbeaver-le': "Light" edition
+                      # * 'dbeaver-ee': "Enterprise" edition
+                      # * 'dbeaver-ue': "Ultimate" edition
+                      # Each of the above are "Pro" editions. For more
+                      # information, see https://dbeaver.com/edition/
+      download_uri:   # Optional: Overrids the default value:
+                      #   https://dbeaver.io/files/dbeaver-ce-latest-linux-x86_64.rpm
+                      # May be an `http://`, `https://` or `s3://` URI.
+      download_sig:   # Optional: URI of signature file. No default-value.
+                      # Signature files are only made available for "Pro"
+                      # editions
+    java_version:     # Optional: Desired JDK version to install. DBeaver
+                      # requires  # version 21 as minimum. This formula will
+                      # install version 25 unless otherwise specified (and will
+                      # install version 25 if the requested-version less than 21
+                      # is requested)

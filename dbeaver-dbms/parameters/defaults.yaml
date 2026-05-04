@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set default values.
+---
+values:
+  pkg:
+    name: dbeaver-dbms
+    download_uri: ''
+    download_sig: ''
+  java_version: ''
+  rootgroup: root
+  config_dir: ''
+  service:
+    name: dbeaver-dbms
+...
