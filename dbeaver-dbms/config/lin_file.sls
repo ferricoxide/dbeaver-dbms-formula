@@ -68,6 +68,18 @@ Ensure DBeaver Settings Directory in Skel:
     - name: '{{ skel_settings_dir }}'
     - user: root
 
+Ensure DBeaver environment variables:
+  file.managed:
+    - contents: |
+        # Set environment variables for DBeaver on headless RHEL 9
+        export NO_AT_BRIDGE=1
+    - group: root
+    - mode: 0644
+    - name: /etc/profile.d/dbeaver.sh
+    - require:
+      - pkg: Install dBeaver RPM
+    - user: root
+
 {% for flag in dbeaver_java_flags %}
 Ensure DBeaver flag {{ flag }}:
   file.replace:
