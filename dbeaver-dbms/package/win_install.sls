@@ -7,7 +7,7 @@
 
 {#- Windows specific paths #}
 {%- set temp_dir = salt['environ.get']('TEMP', 'C:\\temp') %}
-{%- set stage_file = temp_dir ~ '\\k9s_windows_amd64.zip' %}
+{%- set staging_loc = temp_dir ~ '\\k9s_windows_amd64.zip' %}
 {%- set editions = dbeaver_dbms.pkg.get('editions', {}) %}
 {%- set selected_edition = dbeaver_dbms.pkg.get('requested_edition', 'community') %}
 {%- set download_uri = editions.get(selected_edition, editions.community) %}
@@ -15,7 +15,7 @@
 
 Clean-up Staged dBeaver EXE:
   file.absent:
-    - name: '{{ stage_file }}'
+    - name: '{{ staging_loc }}'
     - onchanges:
       - cmd: 'Install dBeaver EXE'
 
@@ -28,7 +28,7 @@ Download dBeaver EXE:
 
 Install dBeaver EXE:
   cmd.run:
-    - name: '{{ stage_file }} /S /allusers /D={{ install_dir }}'
+    - name: '{{ staging_loc }} /S /allusers /D={{ install_dir }}'
     - shell: powershell
     - unless: 'Test-Path "{{ install_dir }}\\dbeaver.exe"'
     - require:
