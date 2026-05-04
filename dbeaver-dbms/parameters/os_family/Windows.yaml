@@ -1,0 +1,11 @@
+dbeaver_dbms:
+  pkg:
+    name: 'dbeaver'
+    # Edition-specific URIs
+    editions:
+      lite: 'https://dbeaver.io/files/dbeaver-le-latest-x86_64-setup.exe'
+      community: 'https://dbeaver.io/files/dbeaver-ce-latest-x86_64-setup.exe'
+      enterprise: 'https://dbeaver.com/files/dbeaver-ee-latest-x86_64-setup.exe'
+      ultimate: 'https://dbeaver.com/files/dbeaver-ue-latest-x86_64-setup.exe'
+    # This key allows you to toggle the version globally via Pillar
+    requested_edition: 'lite'
