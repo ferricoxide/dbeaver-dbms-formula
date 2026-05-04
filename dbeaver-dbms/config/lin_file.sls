@@ -68,7 +68,7 @@ Fix Desktop Entry Exec Path:
     - name: '{{ desktop_file }}'
     - onlyif: 'test -f {{ desktop_file }}'
     - pattern: '^Exec=.*'
-    - repl: 'Exec=/usr/local/bin/dbeaver'
+    - repl: 'Exec=env NO_AT_BRIDGE=1 /usr/local/bin/dbeaver'
     - require:
       - file: Ensure dbeaver command in PATH
 
