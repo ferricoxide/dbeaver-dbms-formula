@@ -147,7 +147,9 @@ Standardize DBeaver Memory:
   file.replace:
     - name: '{{ ini_file_path }}'
     - pattern: '^-Xmx.*'
-    - repl: '-Xmx2G'  {# Adjust this based on your instance size #}
+    - repl: |
+        -Xmx2G
+        -Djava.security.egd=file:/dev/./urandom
     - require:
       - pkg: Install dBeaver RPM
 
