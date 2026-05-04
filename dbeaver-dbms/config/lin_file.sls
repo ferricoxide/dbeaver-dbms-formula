@@ -150,6 +150,9 @@ Standardize DBeaver Memory:
     - repl: |
         -Xmx2G
         -Djava.security.egd=file:/dev/./urandom
+        --add-opens=java.base/sun.security.action=ALL-UNNAMED
+        --add-opens=java.base/java.lang=ALL-UNNAMED
+        --enable-native-access=ALL-UNNAMED
     - require:
       - pkg: Install dBeaver RPM
 
