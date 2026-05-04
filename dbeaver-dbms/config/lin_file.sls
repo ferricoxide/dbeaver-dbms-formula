@@ -29,6 +29,13 @@
 include:
   - {{ sls_package_install }}
 
+Cleanup DBeaver INI:
+  file.replace:
+    - name: '{{ ini_file_path }}'
+    - pattern: '^\s*$\n'
+    - repl: ''
+    - flags: ['MULTILINE']
+
 Ensure DBeaver Driver Path in Skel:
   file.directory:
     - group: root
@@ -71,19 +78,6 @@ Fix Desktop Entry Exec Path:
     - repl: 'Exec=env NO_AT_BRIDGE=1 /usr/local/bin/dbeaver'
     - require:
       - file: Ensure dbeaver command in PATH
-
-Fix the dbeaver.ini file:
-  file.replace:
-    - backup: False
-    - flags: [
-        'MULTILINE'
-      ]
-    - name: '{{ ini_file_path }}'
-    - pattern: '(?<!/bin/java\n)^-vmargs'
-    - repl: |
-        -vm
-        /usr/lib/jvm/java-{{ installed_jdk_ver }}-openjdk/bin/java
-        -vmargs
 
 Link Global Drivers to Skel:
   file.symlink:
@@ -144,17 +138,16 @@ Set Global DBeaver Preferences:
       - file: Ensure DBeaver Settings Directory in Skel
 
 Standardize DBeaver Memory:
-  file.replace:
-    - name: '{{ ini_file_path }}'
-    - pattern: '^-Xmx.*'
-    - repl: |
-        -Xmx2G
-        -Djava.security.egd=file:/dev/./urandom
-        --add-opens=java.base/sun.security.action=ALL-UNNAMED
-        --add-opens=java.base/java.lang=ALL-UNNAMED
-        --enable-native-access=ALL-UNNAMED
-    - require:
-      - pkg: Install dBeaver RPM
+file.append:
+  - name: '{{ ini_file_path }}'
+  - text: |
+      -Xmx2G
+      -Djava.security.egd=file:/dev/./urandom
+      --add-opens=java.base/sun.security.action=ALL-UNNAMED
+      --add-opens=java.base/java.lang=ALL-UNNAMED
+      --enable-native-access=ALL-UNNAMED
+  - require:
+    - pkg: Install dBeaver RPM
 
 Update Desktop Database:
   cmd.run:
