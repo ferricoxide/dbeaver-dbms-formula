@@ -11,7 +11,8 @@
 {%- set ini_file = install_dir ~ '\\dbeaver.ini' %}
 {%- set dbeaver_configs = {
     'ovirt.disableTelemetry': 'true',
-    'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition
+    'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition,
+    'search.eclipse.telemetry.enabled': 'false'
   }
 %}
 {%- set shortcut_targets = {
@@ -27,14 +28,14 @@ include:
 {%- for location, path in shortcut_targets.items() %}
 Create DBeaver {{ location }} Shortcut:
   shortcut.present:
-    - name: '{{ path }}\\DBeaver {{ selected_edition|capitalize }}.lnk'
-    - target: '{{ install_dir }}\\dbeaver.exe'
-    - icon_location: '{{ install_dir }}\\dbeaver.exe'
-    - icon_index: 0
-    - working_dir: '{{ install_dir }}'
     - force: True
+    - icon_index: 0
+    - icon_location: '{{ install_dir }}\\dbeaver.exe'
+    - name: '{{ path }}\\DBeaver {{ selected_edition|capitalize }}.lnk'
     - require:
       - cmd: 'Install dBeaver EXE'
+    - target: '{{ install_dir }}\\dbeaver.exe'
+    - working_dir: '{{ install_dir }}'
 {%- endfor %}
 
 {%- for key, value in dbeaver_configs.items() %}
@@ -47,8 +48,6 @@ Manage DBeaver Setting {{ key }}:
     - append_if_not_found: True
     - require:
       - cmd: 'Install dBeaver EXE'
-    - require_in:
-      - file: 'Modify DBeaver Memory Limit'
 {%- endfor %}
 
 Modify DBeaver Memory Limit:
