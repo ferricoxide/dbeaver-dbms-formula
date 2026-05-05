@@ -13,6 +13,26 @@
 include:
   - {{ sls_package_install }}
 
+Disable DBeaver Telemetry:
+  cmd.run:
+    - name: |
+        $path = "{{ install_dir }}\dbeaver.ini"
+        $content = Get-Content $path
+        $flag = "-Dovirt.disableTelemetry=true"
+        if ($content -match "-Dovirt.disableTelemetry=") {
+          $content -replace "-Dovirt.disableTelemetry=.*", $flag `
+          | Set-Content $path
+        } else {
+          Add-Content $path "`n$flag"
+        }
+    - require:
+      - cmd: 'Install dBeaver EXE'
+    - shell: powershell
+    - unless: |
+        $path = "{{ install_dir }}\dbeaver.ini"
+        $pattern = "^-Dovirt.disableTelemetry=true$"
+        Select-String -Quiet -Pattern $pattern -Path $path
+
 Modify DBeaver Memory Limit:
   file.replace:
     - name: '{{ ini_file }}'
