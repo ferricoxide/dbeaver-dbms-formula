@@ -12,10 +12,30 @@
 {%- set dbeaver_configs = {
     'ovirt.disableTelemetry': 'true',
     'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition
-} %}
+  }
+%}
+{%- set shortcut_targets = {
+    'Desktop': 'C:\\Users\\Public\\Desktop',
+    'Start Menu': 'C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs'
+  }
+%}
+
 
 include:
   - {{ sls_package_install }}
+
+{%- for location, path in shortcut_targets.items() %}
+Create DBeaver {{ location }} Shortcut:
+  shortcut.present:
+    - name: '{{ path }}\\DBeaver {{ selected_edition|capitalize }}.lnk'
+    - target: '{{ install_dir }}\\dbeaver.exe'
+    - icon_location: '{{ install_dir }}\\dbeaver.exe'
+    - icon_index: 0
+    - working_dir: '{{ install_dir }}'
+    - force: True
+    - require:
+      - cmd: 'Install dBeaver EXE'
+{%- endfor %}
 
 {%- for key, value in dbeaver_configs.items() %}
 Manage DBeaver Setting {{ key }}:
