@@ -16,7 +16,7 @@ include:
 Disable DBeaver Telemetry:
   cmd.run:
     - name: |
-        $path = "{{ install_dir }}\dbeaver.ini"
+        $path = "{{ install_dir }}\\dbeaver.ini"
         $content = Get-Content $path
         $flag = "-Dovirt.disableTelemetry=true"
         if ($content -match "-Dovirt.disableTelemetry=") {
@@ -29,26 +29,29 @@ Disable DBeaver Telemetry:
       - cmd: 'Install dBeaver EXE'
     - shell: powershell
     - unless: |
-        $path = "{{ install_dir }}\dbeaver.ini"
+        $path = "{{ install_dir }}\\dbeaver.ini"
         $pattern = "^-Dovirt.disableTelemetry=true$"
+        if ( !( Test-Path $path ) ) {
+          exit 1
+        }
         if ( !( Select-String -Quiet -Pattern $pattern -Path $path ) ) {
           exit 1
         }
 
 Modify DBeaver Memory Limit:
   file.replace:
-    - name: '{{ ini_file }}'
+    - append_if_not_found: True
+    - name: '{{ install_dir }}\\dbeaver.ini'
     - pattern: '^-Xmx.*'
     - repl: '-Xmx2048m'
-    - append_if_not_found: True
     - require:
-      - cmd: 'Install dBeaver EXE'
+      - cmd: 'Disable DBeaver Telemetry'
 
 Set Custom Workspace Area:
   file.replace:
+    - append_if_not_found: True
     - name: '{{ install_dir }}\\dbeaver.ini'
     - pattern: '^-Dosgi.instance.area.default=.*'
     - repl: '-Dosgi.instance.area.default=@user.home/AppData/Roaming/DBeaverData/{{ selected_edition }}'
-    - append_if_not_found: True
     - require:
-      - cmd: 'Install dBeaver EXE'
+      - file: 'Modify DBeaver Memory Limit'
