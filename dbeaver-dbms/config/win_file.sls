@@ -65,9 +65,12 @@ Modify DBeaver Memory Limit:
 Suppress DBeaver Telemetry Popup:
   file.managed:
     - contents: |
+        eclipse.preferences.version=1
         statistics.receive.send=false
         statistics.receive.skip=true
+    - encoding: utf-8
     - makedirs: True
     - name: '{{ prefs_path }}'
     - require:
       - cmd: 'Install dBeaver EXE'
+    - win_line_endings: True
