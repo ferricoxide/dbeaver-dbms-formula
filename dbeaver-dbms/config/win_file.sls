@@ -41,6 +41,16 @@ Create DBeaver {{ location }} Shortcut:
     - working_dir: '{{ install_dir }}'
 {%- endfor %}
 
+Global DBeaver Preference Override:
+  file.managed:
+    - name: '{{ install_dir }}\\plugin_customization.ini'
+    - contents: |
+        org.jkiss.dbeaver.core/statistics.receive.send=false
+        org.jkiss.dbeaver.core/statistics.receive.skip=true
+        org.jkiss.dbeaver.ui/ui.statistics.keepUpdated=false
+    - require:
+      - cmd: 'Install dBeaver EXE'
+
 {%- for key, value in dbeaver_configs.items() %}
 Manage DBeaver Setting {{ key }}:
   file.keyvalue:
