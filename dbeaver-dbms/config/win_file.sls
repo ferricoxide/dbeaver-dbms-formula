@@ -31,7 +31,9 @@ Disable DBeaver Telemetry:
     - unless: |
         $path = "{{ install_dir }}\dbeaver.ini"
         $pattern = "^-Dovirt.disableTelemetry=true$"
-        Select-String -Quiet -Pattern $pattern -Path $path
+        if ( !( Select-String -Quiet -Pattern $pattern -Path $path ) ) {
+          exit 1
+        }
 
 Modify DBeaver Memory Limit:
   file.replace:
