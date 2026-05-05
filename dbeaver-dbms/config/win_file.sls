@@ -9,49 +9,33 @@
 {%- set selected_edition = dbeaver_dbms.pkg.get('requested_edition', 'community') %}
 {%- set install_dir = 'C:\\Program Files\\DBeaver\\' ~ selected_edition %}
 {%- set ini_file = install_dir ~ '\\dbeaver.ini' %}
+{%- set dbeaver_configs = {
+    'ovirt.disableTelemetry': 'true',
+    'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition
+} %}
 
 include:
   - {{ sls_package_install }}
 
-Disable DBeaver Telemetry:
-  cmd.run:
-    - name: |
-        $path = "{{ install_dir }}\\dbeaver.ini"
-        $content = Get-Content $path
-        $flag = "-Dovirt.disableTelemetry=true"
-        if ($content -match "-Dovirt.disableTelemetry=") {
-          $content -replace "-Dovirt.disableTelemetry=.*", $flag `
-          | Set-Content $path
-        } else {
-          Add-Content $path "`n$flag"
-        }
+{%- for key, value in dbeaver_configs.items() %}
+Manage DBeaver Setting {{ key }}:
+  file.keyvalue:
+    - name: '{{ ini_file }}'
+    - key: '-D{{ key }}'
+    - value: '{{ value }}'
+    - separator: '='
+    - append_if_not_found: True
     - require:
       - cmd: 'Install dBeaver EXE'
-    - shell: powershell
-    - unless: |
-        $path = "{{ install_dir }}\\dbeaver.ini"
-        $pattern = "^-Dovirt.disableTelemetry=true$"
-        if ( !( Test-Path $path ) ) {
-          exit 1
-        }
-        if ( !( Select-String -Quiet -Pattern $pattern -Path $path ) ) {
-          exit 1
-        }
+    - require_in:
+      - file: 'Modify DBeaver Memory Limit'
+{%- endfor %}
 
 Modify DBeaver Memory Limit:
   file.replace:
-    - append_if_not_found: True
-    - name: '{{ install_dir }}\\dbeaver.ini'
+    - append_if_not_found: False
+    - name: '{{ ini_file }}'
     - pattern: '^-Xmx.*'
     - repl: '-Xmx2048m'
     - require:
-      - cmd: 'Disable DBeaver Telemetry'
-
-Set Custom Workspace Area:
-  file.replace:
-    - append_if_not_found: True
-    - name: '{{ install_dir }}\\dbeaver.ini'
-    - pattern: '^-Dosgi.instance.area.default=.*'
-    - repl: '-Dosgi.instance.area.default=@user.home/AppData/Roaming/DBeaverData/{{ selected_edition }}'
-    - require:
-      - file: 'Modify DBeaver Memory Limit'
+      - cmd: 'Install dBeaver EXE'
