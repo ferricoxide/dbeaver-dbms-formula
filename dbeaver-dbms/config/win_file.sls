@@ -10,8 +10,10 @@
 {%- set install_dir = 'C:\\Program Files\\DBeaver\\' ~ selected_edition %}
 {%- set ini_file = install_dir ~ '\\dbeaver.ini' %}
 {%- set appdata_root = 'C:\\Users\\Default\\AppData\\Roaming\\DBeaverData\\' %}
-{%- set appdata_suffix = '\\General\\.plugins\\org.eclipse.core.runtime\\.settings\\org.jkiss.dbeaver.core.prefs' %}
-{%- set prefs_path = appdata_root ~ selected_edition ~ appdata_suffix %}
+{%- set dbeaver_core_prefs = '\\General\\.plugins\\org.eclipse.core.runtime\\.settings\\org.jkiss.dbeaver.core.prefs' %}
+{%- set eclipse_ui_prefs = '\\General\\.metadata\\.plugins\\org.eclipse.core.runtime\\.settings\\org.eclipse.ui.prefs' %}
+{%- set prefs_path = appdata_root ~ selected_edition ~ dbeaver_core_prefs %}
+{%- set eclipse_ui_prefs_path = appdata_root ~ selected_edition ~ eclipse_ui_prefs %}
 {%- set dbeaver_configs = {
     'ovirt.disableTelemetry': 'true',
     'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition,
@@ -69,6 +71,18 @@ Modify DBeaver Memory Limit:
     - name: '{{ ini_file }}'
     - pattern: '^-Xmx.*'
     - repl: '-Xmx2048m'
+    - require:
+      - cmd: 'Install dBeaver EXE'
+
+Pre-initialize DBeaver Workspace:
+  file.managed:
+    - contents: |
+        eclipse.preferences.version=1
+        SHOW_TEXT_ON_PERSPECTIVE_BAR=false
+        # This tells Eclipse the 'First Run' was completed
+        newWorkbench=false
+    - makedirs: True
+    - name: '{{ eclipse_ui_prefs_path }}'
     - require:
       - cmd: 'Install dBeaver EXE'
 
