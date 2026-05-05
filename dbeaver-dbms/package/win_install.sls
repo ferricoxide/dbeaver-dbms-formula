@@ -21,24 +21,24 @@
 
 Clean-up Staged dBeaver EXE:
   file.absent:
-    - name: '{{ staging_loc }}'
     - onchanges:
       - cmd: 'Install dBeaver EXE'
+    - name: '{{ staging_loc }}'
 
 Download dBeaver EXE:
   file.managed:
     - name: '{{ staging_loc }}'
-    - source: '{{ download_uri }}'
     - makedirs: True
     - skip_verify: True
+    - source: '{{ download_uri }}'
 
 Install dBeaver EXE:
   cmd.run:
     - name: '{{ staging_loc }} /S /allusers /D={{ install_dir }}'
-    - shell: powershell
-    - unless: 'Test-Path "{{ install_dir }}\\dbeaver.exe"'
     - require:
       - file: 'Download dBeaver EXE'
+    - shell: powershell
+    - unless: 'exit !( Test-Path "{{ install_dir }}\\dbeaver.exe" )'
 
 Update System Path for DBeaver:
   win_path.exists:
