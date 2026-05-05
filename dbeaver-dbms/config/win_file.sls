@@ -9,6 +9,9 @@
 {%- set selected_edition = dbeaver_dbms.pkg.get('requested_edition', 'community') %}
 {%- set install_dir = 'C:\\Program Files\\DBeaver\\' ~ selected_edition %}
 {%- set ini_file = install_dir ~ '\\dbeaver.ini' %}
+{%- set appdata_root = 'C:\\Users\\Default\\AppData\\Roaming\\DBeaverData\\' %}
+{%- set appdata_suffix = '\\General\\.plugins\\org.eclipse.core.runtime\\.settings\\org.jkiss.dbeaver.core.prefs' %}
+{%- set prefs_path = appdata_root ~ selected_edition ~ appdata_suffix %}
 {%- set dbeaver_configs = {
     'ovirt.disableTelemetry': 'true',
     'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition,
@@ -56,5 +59,15 @@ Modify DBeaver Memory Limit:
     - name: '{{ ini_file }}'
     - pattern: '^-Xmx.*'
     - repl: '-Xmx2048m'
+    - require:
+      - cmd: 'Install dBeaver EXE'
+
+Suppress DBeaver Telemetry Popup:
+  file.managed:
+    - contents: |
+        statistics.receive.send=false
+        statistics.receive.skip=true
+    - makedirs: True
+    - name: '{{ prefs_path }}'
     - require:
       - cmd: 'Install dBeaver EXE'
