@@ -1,8 +1,8 @@
-dbeaver_dbms:
-  pkg:
-    name: 'dbeaver'
-    editions:
-      lite: 'https://dbeaver.io/files/dbeaver-le-latest-x86_64-setup.exe'
-      community: 'https://dbeaver.io/files/dbeaver-ce-latest-x86_64-setup.exe'
-      enterprise: 'https://dbeaver.com/files/dbeaver-ee-latest-x86_64-setup.exe'
-      ultimate: 'https://dbeaver.com/files/dbeaver-ue-latest-x86_64-setup.exe'
+pkg:
+  name: 'dbeaver'
+  editions:
+    lite: 'https://dbeaver.io/files/dbeaver-le-latest-x86_64-setup.exe'
+    community: 'https://dbeaver.io/files/dbeaver-ce-latest-x86_64-setup.exe'
+    enterprise: 'https://dbeaver.com/files/dbeaver-ee-latest-x86_64-setup.exe'
+    ultimate: 'https://dbeaver.com/files/dbeaver-ue-latest-x86_64-setup.exe'
+  driver_repo_path: 'C:\ProgramData\DBeaver\Drivers'

@@ -10,10 +10,6 @@ values:
     download_sig: ''
     editions: Null
     requested_edition: 'community'
-
+    driver_repo_path: ''
   java_version: ''
-  rootgroup: root
-  config_dir: ''
-  service:
-    name: dbeaver-dbms
 ...

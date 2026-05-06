@@ -34,6 +34,9 @@
     'Start Menu': 'C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs'
   }
 %}
+{%- set pkg = dbeaver_dbms.get('pkg') or {} %}
+{%- set base_driver_path = pkg.get('driver_repo_path', '') %}
+{%- set final_driver_path = base_driver_path ~ '\\' ~ selected_edition if base_driver_path else '' %}
 
 
 include:
@@ -47,6 +50,25 @@ Configure DBeaver Privacy Registry:
     - vtype: REG_DWORD
     - require:
       - cmd: 'Install dBeaver EXE'
+
+{%- if final_driver_path %}
+Configure Local Driver Repository:
+  file.append:
+    - name: '{{ prefs_path }}'
+    - require:
+      - file: 'Suppress DBeaver Telemetry Popup'
+      - file: 'Ensure Local Driver Directory Exists'
+    - text:
+      - 'drivers.repo.external={{ final_driver_path | replace("\\", "\\\\") }}'
+      - 'drivers.remote.download.enabled=false'
+
+Ensure Local Driver Directory Exists:
+  file.directory:
+    - makedirs: True
+    - name: '{{ final_driver_path }}'
+    - require:
+      - cmd: 'Install dBeaver EXE'
+{%- endif %}
 
 {%- for location, path in shortcut_targets.items() %}
 Create DBeaver {{ location }} Shortcut:
