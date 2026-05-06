@@ -14,15 +14,19 @@
 {%- set dbeaver_roam_ui_prefs = '\\General\\.plugins\\org.eclipse.core.runtime\\.settings\\org.jkiss.dbeaver.ui.prefs' %}
 {%- set eclipse_ui_prefs = '\\General\\.metadata\\.plugins\\org.eclipse.core.runtime\\.settings\\org.eclipse.ui.prefs' %}
 {%- set eclipse_ui_prefs_path = appdata_root ~ selected_edition ~ eclipse_ui_prefs %}
+{%- set oomph_recorder_prefs = '\\General\\.plugins\\org.eclipse.oomph.setup\\setup.recorder.prefs' %}
 {%- set prefs_path = appdata_root ~ selected_edition ~ dbeaver_core_prefs %}
+{%- set recorder_prefs_path = appdata_root ~ selected_edition ~ oomph_recorder_prefs %}
 {%- set roam_ui_prefs_path = appdata_root ~ selected_edition ~ dbeaver_roam_ui_prefs %}
 {%- set workbench_xml = '\\General\\.metadata\\.plugins\\org.eclipse.ui.workbench\\workbench.xml' %}
 {%- set workbench_xml_path = appdata_root ~ selected_edition ~ workbench_xml %}
 {%- set dbeaver_configs = {
-    'ovirt.disableTelemetry': 'true',
+    'dbeaver.statistics.receive.notified': 'true',
+    'dbeaver.statistics.receive.skip': 'true',
+    'eclipse.pluginCustomization': 'configuration/plugin_customization.ini',
     'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition,
-    'search.eclipse.telemetry.enabled': 'false',
-    'eclipse.pluginCustomization': 'configuration/plugin_customization.ini'
+    'ovirt.disableTelemetry': 'true',
+    'search.eclipse.telemetry.enabled': 'false'
   }
 %}
 {%- set shortcut_targets = {
@@ -48,6 +52,19 @@ Create DBeaver {{ location }} Shortcut:
     - working_dir: '{{ install_dir }}'
 {%- endfor %}
 
+Disable Eclipse Oomph Setup:
+  file.managed:
+    - contents: |
+        eclipse.preferences.version=1
+        enabled=false
+    - encoding: ascii
+    - makedirs: True
+    - name: '{{ recorder_prefs_path }}'
+    - require:
+      - file: 'Suppress DBeaver Telemetry Popup'
+      - file: 'Suppress DBeaver UI Consent'
+    - win_line_endings: True
+
 Force Workbench Initialized:
   file.managed:
     - name: 'C:\\Users\\Default\\AppData\\Roaming\\DBeaverData\\{{ selected_edition }}\\General\\.metadata\\.plugins\\org.eclipse.ui.workbench\\workbench.xml'
@@ -57,6 +74,8 @@ Force Workbench Initialized:
         <workbench version="2.0">
           <activePerspectiveId value="org.jkiss.dbeaver.core.perspective"/>
         </workbench>
+    - require:
+      - file: 'Set Metadata Version Marker'
     - win_line_endings: True
 
 Global DBeaver Preference Override:
@@ -103,7 +122,7 @@ Pre-initialize DBeaver Workspace:
     - makedirs: True
     - name: '{{ eclipse_ui_prefs_path }}'
     - require:
-      - cmd: 'Install dBeaver EXE'
+      - file: 'Force Workbench Initialized'
     - win_line_endings: True
 
 Set Metadata Version Marker:
@@ -116,13 +135,14 @@ Set Metadata Version Marker:
 
 Set Workspace Version Marker:
   file.managed:
-    - name: '{{ appdata_root }}{{ selected_edition }}\\General\\.metadata\\version.ini'
-    - makedirs: True
     - contents: |
         org.eclipse.core.runtime=1
-    - win_line_endings: True
+    - makedirs: True
+    - name: '{{ appdata_root }}{{ selected_edition }}\\General\\.metadata\\version.ini'
     - require:
-      - cmd: 'Install dBeaver EXE'
+      - file: 'Global DBeaver Preference Override'
+      - file: 'Set Metadata Version Marker'
+    - win_line_endings: True
 
 Suppress DBeaver Telemetry Popup:
   file.managed:
@@ -134,7 +154,8 @@ Suppress DBeaver Telemetry Popup:
     - makedirs: True
     - name: '{{ prefs_path }}'
     - require:
-      - cmd: 'Install dBeaver EXE'
+      - file: 'Set Workspace Version Marker'
+      - file: 'Force Workbench Initialized'
     - win_line_endings: True
 
 Suppress DBeaver UI Consent:
@@ -148,5 +169,6 @@ Suppress DBeaver UI Consent:
     - makedirs: True
     - name: '{{ roam_ui_prefs_path }}'
     - require:
-      - cmd: 'Install dBeaver EXE'
+      - file: 'Set Workspace Version Marker'
+      - file: 'Force Workbench Initialized'
     - win_line_endings: True
