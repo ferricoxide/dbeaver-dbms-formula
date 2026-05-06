@@ -16,6 +16,8 @@
 {%- set eclipse_ui_prefs_path = appdata_root ~ selected_edition ~ eclipse_ui_prefs %}
 {%- set prefs_path = appdata_root ~ selected_edition ~ dbeaver_core_prefs %}
 {%- set roam_ui_prefs_path = appdata_root ~ selected_edition ~ dbeaver_roam_ui_prefs %}
+{%- set workbench_xml = '\\General\\.metadata\\.plugins\\org.eclipse.ui.workbench\\workbench.xml' %}
+{%- set workbench_xml_path = appdata_root ~ selected_edition ~ workbench_xml %}
 {%- set dbeaver_configs = {
     'ovirt.disableTelemetry': 'true',
     'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition,
@@ -44,6 +46,17 @@ Create DBeaver {{ location }} Shortcut:
     - target: '{{ install_dir }}\\dbeaver.exe'
     - working_dir: '{{ install_dir }}'
 {%- endfor %}
+
+Force Workbench Initialized:
+  file.managed:
+    - name: 'C:\\Users\\Default\\AppData\\Roaming\\DBeaverData\\{{ selected_edition }}\\General\\.metadata\\.plugins\\org.eclipse.ui.workbench\\workbench.xml'
+    - makedirs: True
+    - contents: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workbench version="2.0">
+          <activePerspectiveId value="org.jkiss.dbeaver.core.perspective"/>
+        </workbench>
+    - win_line_endings: True
 
 Global DBeaver Preference Override:
   file.managed:
