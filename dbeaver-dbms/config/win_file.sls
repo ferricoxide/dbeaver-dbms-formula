@@ -11,9 +11,11 @@
 {%- set ini_file = install_dir ~ '\\dbeaver.ini' %}
 {%- set appdata_root = 'C:\\Users\\Default\\AppData\\Roaming\\DBeaverData\\' %}
 {%- set dbeaver_core_prefs = '\\General\\.plugins\\org.eclipse.core.runtime\\.settings\\org.jkiss.dbeaver.core.prefs' %}
+{%- set dbeaver_roam_ui_prefs = '\\General\\.plugins\\org.eclipse.core.runtime\\.settings\\org.jkiss.dbeaver.ui.prefs' %}
 {%- set eclipse_ui_prefs = '\\General\\.metadata\\.plugins\\org.eclipse.core.runtime\\.settings\\org.eclipse.ui.prefs' %}
-{%- set prefs_path = appdata_root ~ selected_edition ~ dbeaver_core_prefs %}
 {%- set eclipse_ui_prefs_path = appdata_root ~ selected_edition ~ eclipse_ui_prefs %}
+{%- set prefs_path = appdata_root ~ selected_edition ~ dbeaver_core_prefs %}
+{%- set roam_ui_prefs_path = appdata_root ~ selected_edition ~ dbeaver_roam_ui_prefs %}
 {%- set dbeaver_configs = {
     'ovirt.disableTelemetry': 'true',
     'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition,
@@ -95,6 +97,19 @@ Suppress DBeaver Telemetry Popup:
     - encoding: utf-8
     - makedirs: True
     - name: '{{ prefs_path }}'
+    - require:
+      - cmd: 'Install dBeaver EXE'
+    - win_line_endings: True
+
+Suppress DBeaver UI Consent:
+  file.managed:
+    - contents: |
+        eclipse.preferences.version=1
+        ui.statistics.keepUpdated=false
+        # This is often the specific flag the UI checks to see if it should nag
+        ui.statistics.notified=true
+    - makedirs: True
+    - name: '{{ roam_ui_prefs_path }}'
     - require:
       - cmd: 'Install dBeaver EXE'
     - win_line_endings: True
