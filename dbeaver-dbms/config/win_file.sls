@@ -21,7 +21,8 @@
 {%- set dbeaver_configs = {
     'ovirt.disableTelemetry': 'true',
     'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition,
-    'search.eclipse.telemetry.enabled': 'false'
+    'search.eclipse.telemetry.enabled': 'false',
+    'eclipse.pluginCustomization': 'configuration/plugin_customization.ini'
   }
 %}
 {%- set shortcut_targets = {
@@ -98,11 +99,20 @@ Pre-initialize DBeaver Workspace:
         SHOW_TEXT_ON_PERSPECTIVE_BAR=false
         newWorkbench=false
         ui.statistics.notified=true
+    - encoding: ascii
     - makedirs: True
     - name: '{{ eclipse_ui_prefs_path }}'
     - require:
       - cmd: 'Install dBeaver EXE'
     - win_line_endings: True
+
+Set Metadata Version Marker:
+  file.managed:
+    - name: '{{ appdata_root }}{{ selected_edition }}\\General\\.metadata\\.version'
+    - makedirs: True
+    - contents: '2'
+    - require:
+      - cmd: 'Install dBeaver EXE'
 
 Set Workspace Version Marker:
   file.managed:
@@ -120,6 +130,7 @@ Suppress DBeaver Telemetry Popup:
         eclipse.preferences.version=1
         statistics.receive.send=false
         statistics.receive.skip=true
+    - encoding: ascii
     - makedirs: True
     - name: '{{ prefs_path }}'
     - require:
@@ -133,6 +144,7 @@ Suppress DBeaver UI Consent:
         ui.statistics.keepUpdated=false
         # This is often the specific flag the UI checks to see if it should nag
         ui.statistics.notified=true
+    - encoding: ascii
     - makedirs: True
     - name: '{{ roam_ui_prefs_path }}'
     - require:
