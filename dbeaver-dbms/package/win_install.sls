@@ -8,8 +8,9 @@
 {#- Windows specific paths #}
 {%- set temp_dir = salt['environ.get']('TEMP', 'C:\\temp') %}
 {%- set staging_loc = temp_dir ~ '\\dbeaver-setup.exe' %}
-{%- set editions = dbeaver_dbms.pkg.get('editions', {}) %}
-{%- set selected_edition = dbeaver_dbms.pkg.get('requested_edition', 'community') %}
+{%- set pkg = dbeaver_dbms.get('pkg') or {} %}
+{%- set editions = pkg.get('editions') or {} %}
+{%- set selected_edition = pkg.get('requested_edition', 'community') %}
 {%- set download_uri = editions.get(
     selected_edition, editions.get(
       'community',
@@ -17,6 +18,7 @@
     )
   )
 %}
+
 {%- set install_dir = 'C:\\Program Files\\DBeaver\\' ~ selected_edition %}
 
 Clean-up Staged dBeaver EXE:
