@@ -8,6 +8,9 @@ values:
     name: dbeaver-dbms
     download_uri: ''
     download_sig: ''
+    editions: Null
+    requested_edition: 'community'
+
   java_version: ''
   rootgroup: root
   config_dir: ''
