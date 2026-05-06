@@ -39,6 +39,15 @@
 include:
   - {{ sls_package_install }}
 
+Configure DBeaver Privacy Registry:
+  reg.present:
+    - name: 'HKEY_CURRENT_USER\Software\JKISS\DBeaver'
+    - vname: 'PrivacyAccepted'
+    - vdata: 1
+    - vtype: REG_DWORD
+    - require:
+      - cmd: 'Install dBeaver EXE'
+
 {%- for location, path in shortcut_targets.items() %}
 Create DBeaver {{ location }} Shortcut:
   shortcut.present:
@@ -76,6 +85,7 @@ Force Workbench Initialized:
         </workbench>
     - require:
       - file: 'Set Metadata Version Marker'
+      - file: 'Set Workspace Version Marker'
     - win_line_endings: True
 
 Global DBeaver Preference Override:
