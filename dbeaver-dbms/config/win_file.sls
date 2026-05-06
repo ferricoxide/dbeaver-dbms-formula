@@ -59,8 +59,8 @@ Configure Local Driver Repository:
       - file: 'Suppress DBeaver Telemetry Popup'
       - file: 'Ensure Local Driver Directory Exists'
     - text:
-      - 'drivers.repo.external={{ final_driver_path | replace("\\", "\\\\") }}'
-      - 'drivers.remote.download.enabled=false'
+      - drivers.repo.external={{ final_driver_path | replace('\\', '\\\\') }}
+      - drivers.remote.download.enabled={{ 'false' if pkg.get('driver_seeds') else 'true' }}
 
 Ensure Local Driver Directory Exists:
   file.directory:

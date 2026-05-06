@@ -12,9 +12,9 @@ values:
     requested_edition: 'community'
     driver_repo_path: ''
     driver_seeds:
-      - name: postgresql.jar
-        source: 'https://jdbc.postgresql.org/download/postgresql-42.7.2.jar'
-      - name: mssql-jdbc.jar
-        source: 'https://github.com/microsoft/mssql-jdbc/releases/download/v12.6.1/mssql-jdbc-12.6.1.jre11.jar'
+      - name: mysql-connector-j-9.7.0.jar
+        source: 'https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/9.7.0/mysql-connector-j-9.7.0.jar'
+      - name: postgresql-42.7.11.jar
+        source: 'https://jdbc.postgresql.org/download/postgresql-42.7.11.jar'
   java_version: ''
 ...

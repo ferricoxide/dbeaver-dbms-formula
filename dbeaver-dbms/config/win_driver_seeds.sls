@@ -16,10 +16,10 @@ include:
 {%- for driver in pkg.get('driver_seeds', []) %}
 Seed DBeaver Driver - {{ driver.name }}:
   file.managed:
-    - name: {{ driver_path }}\{{ driver.name }}
-    - source: {{ driver.source }}
-    - skip_verify: True
     - makedirs: True
+    - name: {{ driver_path }}\{{ driver.name.replace('.jar', '') }}\{{ driver.name }}
     - require:
       - file: Ensure Local Driver Directory Exists
+    - skip_verify: True
+    - source: {{ driver.source }}
 {%- endfor %}
