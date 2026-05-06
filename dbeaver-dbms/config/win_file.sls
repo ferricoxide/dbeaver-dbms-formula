@@ -96,10 +96,21 @@ Pre-initialize DBeaver Workspace:
     - contents: |
         eclipse.preferences.version=1
         SHOW_TEXT_ON_PERSPECTIVE_BAR=false
-        # This tells Eclipse the 'First Run' was completed
         newWorkbench=false
+        ui.statistics.notified=true
     - makedirs: True
     - name: '{{ eclipse_ui_prefs_path }}'
+    - require:
+      - cmd: 'Install dBeaver EXE'
+    - win_line_endings: True
+
+Set Workspace Version Marker:
+  file.managed:
+    - name: '{{ appdata_root }}{{ selected_edition }}\\General\\.metadata\\version.ini'
+    - makedirs: True
+    - contents: |
+        org.eclipse.core.runtime=1
+    - win_line_endings: True
     - require:
       - cmd: 'Install dBeaver EXE'
 
@@ -109,7 +120,6 @@ Suppress DBeaver Telemetry Popup:
         eclipse.preferences.version=1
         statistics.receive.send=false
         statistics.receive.skip=true
-    - encoding: utf-8
     - makedirs: True
     - name: '{{ prefs_path }}'
     - require:
