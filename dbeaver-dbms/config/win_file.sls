@@ -158,6 +158,9 @@ Suppress DBeaver Telemetry Popup:
   file.managed:
     - contents: |
         eclipse.preferences.version=1
+        org.jkiss.dbeaver.core/privacy.policy.accepted=true
+        org.jkiss.dbeaver.core/privacy.view.count=1
+        org.jkiss.dbeaver.ui/ui.privacy.accepted=true
         statistics.receive.send=false
         statistics.receive.skip=true
     - encoding: ascii
