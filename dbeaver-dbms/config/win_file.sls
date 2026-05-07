@@ -13,11 +13,19 @@
 {%- set dbeaver_core_prefs = '\\General\\.plugins\\org.eclipse.core.runtime\\.settings\\org.jkiss.dbeaver.core.prefs' %}
 {%- set dbeaver_roam_ui_prefs = '\\General\\.plugins\\org.eclipse.core.runtime\\.settings\\org.jkiss.dbeaver.ui.prefs' %}
 {%- set eclipse_ui_prefs = '\\General\\.metadata\\.plugins\\org.eclipse.core.runtime\\.settings\\org.eclipse.ui.prefs' %}
+{%- set core_net_prefs = '\\General\\.plugins\\org.eclipse.core.net\\org.eclipse.core.net.prefs' %}
 {%- set eclipse_ui_prefs_path = appdata_root ~ selected_edition ~ eclipse_ui_prefs %}
+{%- set net_prefs_path = appdata_root ~ selected_edition ~ core_net_prefs %}
 {%- set oomph_recorder_prefs = '\\General\\.plugins\\org.eclipse.oomph.setup\\setup.recorder.prefs' %}
 {%- set prefs_path = appdata_root ~ selected_edition ~ dbeaver_core_prefs %}
 {%- set recorder_prefs_path = appdata_root ~ selected_edition ~ oomph_recorder_prefs %}
 {%- set roam_ui_prefs_path = appdata_root ~ selected_edition ~ dbeaver_roam_ui_prefs %}
+{%- set network_configs = {
+    'systemProxiesEnabled': 'true',
+    'proxiesEnabled': 'true',
+    'org.eclipse.core.net.hasMigrated': 'true'
+  }
+%}
 {%- set workbench_xml = '\\General\\.metadata\\.plugins\\org.eclipse.ui.workbench\\workbench.xml' %}
 {%- set workbench_xml_path = appdata_root ~ selected_edition ~ workbench_xml %}
 {%- set dbeaver_configs = {
@@ -102,6 +110,13 @@ Disable Eclipse Oomph Setup:
       - file: 'Suppress DBeaver UI Consent'
     - win_line_endings: True
 
+Ensure Network Plugin Directory Exists:
+  file.directory:
+    - name: '{{ net_prefs_path | json_query("split('\\', @)[:-1] | join('\\')") }}'
+    - makedirs: True
+    - require:
+      - file: 'Set Workspace Version Marker'
+
 Force Workbench Initialized:
   file.managed:
     - name: 'C:\\Users\\Default\\AppData\\Roaming\\DBeaverData\\{{ selected_edition }}\\General\\.metadata\\.plugins\\org.eclipse.ui.workbench\\workbench.xml'
@@ -127,6 +142,19 @@ Global DBeaver Preference Override:
     - name: '{{ install_dir }}\\configuration\\plugin_customization.ini'
     - require:
       - cmd: 'Install dBeaver EXE'
+
+{%- for key, value in network_configs.items() %}
+Manage DBeaver Network Setting {{ key }}:
+  file.keyvalue:
+    - append_if_not_found: True
+    - key: '{{ key }}'
+    - makedirs: True
+    - name: '{{ net_prefs_path }}'
+    - require:
+      - file: 'Ensure Network Plugin Directory Exists'
+    - separator: '='
+    - value: '{{ value }}'
+{%- endfor %}
 
 {%- for key, value in dbeaver_configs.items() %}
 Manage DBeaver Setting {{ key }}:
