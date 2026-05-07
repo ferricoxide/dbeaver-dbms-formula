@@ -112,7 +112,7 @@ Disable Eclipse Oomph Setup:
 
 Ensure Network Plugin Directory Exists:
   file.directory:
-    - name: '{{ net_prefs_path | json_query("split('\\', @)[:-1] | join('\\')") }}'
+    - name: {{ net_prefs_path.split('\\')[:-1] | join('\\') }}
     - makedirs: True
     - require:
       - file: 'Set Workspace Version Marker'
