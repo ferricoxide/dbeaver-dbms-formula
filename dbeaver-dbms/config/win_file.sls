@@ -148,7 +148,6 @@ Manage DBeaver Network Setting {{ key }}:
   file.keyvalue:
     - append_if_not_found: True
     - key: '{{ key }}'
-    - makedirs: True
     - name: '{{ net_prefs_path }}'
     - require:
       - file: 'Ensure Network Plugin Directory Exists'
