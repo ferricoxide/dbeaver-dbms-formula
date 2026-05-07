@@ -34,6 +34,12 @@
     'Start Menu': 'C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs'
   }
 %}
+{%- set jvm_optimizations = [
+    '-XX:+UseG1GC',
+    '-XX:+UseStringDeduplication',
+    '-XX:+ParallelRefProcEnabled',
+    '-XX:MaxGCPauseMillis=200'
+] %}
 {%- set pkg = dbeaver_dbms.get('pkg') or {} %}
 {%- set base_driver_path = pkg.get('driver_repo_path', '') %}
 {%- set final_driver_path = base_driver_path ~ '\\' ~ selected_edition if base_driver_path else '' %}
@@ -134,14 +140,35 @@ Manage DBeaver Setting {{ key }}:
       - cmd: 'Install dBeaver EXE'
 {%- endfor %}
 
-Modify DBeaver Memory Limit:
+{%- for setting in jvm_optimizations %}
+Miscellaneous JVM Tunes - {{ setting }}:
+  file.append:
+    - name: '{{ ini_file }}'
+    - require:
+      - file: 'Modify DBeaver Memory Initial'
+    - text: '{{ setting }}'
+    - unless:
+        - findstr /C:"{{ setting }}" "{{ ini_file }}"
+{%- endfor %}
+
+Modify DBeaver Memory Initial:
+  file.replace:
+    - append_if_not_found: True
+    - name: '{{ ini_file }}'
+    - pattern: '^-Xms.*'
+    - repl: '-Xms{{ dbeaver_dbms.jvm_tunes.heap_initial }}m'
+    - require:
+      - file: 'Modify DBeaver Memory Maximum'
+
+Modify DBeaver Memory Maximum:
   file.replace:
     - append_if_not_found: False
     - name: '{{ ini_file }}'
     - pattern: '^-Xmx.*'
-    - repl: '-Xmx2048m'
+    - repl: '-Xmx{{ dbeaver_dbms.jvm_tunes.heap_max }}m'
     - require:
       - cmd: 'Install dBeaver EXE'
+
 
 Pre-initialize DBeaver Workspace:
   file.managed:
