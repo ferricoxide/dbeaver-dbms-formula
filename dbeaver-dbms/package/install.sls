@@ -7,7 +7,7 @@
 
 include:
 {%- if grains.kernel == "Linux" %}
-  - dbeaver-dbms.package..lin_install
+  - dbeaver-dbms.package.lin_install
 {%- elif grains.kernel == "Windows" %}
   - dbeaver-dbms.package.win_install
 {%- endif %}
