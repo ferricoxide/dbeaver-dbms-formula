@@ -25,3 +25,20 @@ jobs:
       salt-os-version: ${{ matrix.os_version }}
       salt-state: ${{ matrix.salt_state }}
       salt-pillar-root: ${{ matrix.salt_pillar_root }}
+
+  windows:
+    uses: plus3it/actions-workflows/.github/workflows/test-salt-windows.yml@ddd67e99878a285f728de398c1116151c2d7791a
+    strategy:
+      matrix:
+        os_version:
+          - windows-2019
+          - windows-2022
+          - windows-2025
+        salt_state:
+          - dbeaver-dbms
+        salt_pillar_root:
+          - ./tests/pillar/test-dbeaver-dbms
+    with:
+      salt-os-version: ${{ matrix.os_version }}
+      salt-state: ${{ matrix.salt_state }}
+      salt-pillar-root: ${{ matrix.salt_pillar_root }}
