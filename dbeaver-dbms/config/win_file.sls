@@ -117,6 +117,14 @@ Ensure Network Plugin Directory Exists:
     - require:
       - file: 'Set Workspace Version Marker'
 
+Ensure Network Preference File Exists:
+  file.managed:
+    - name: '{{ net_prefs_path }}'
+    - makedirs: True
+    - replace: False
+    - require:
+      - file: 'Ensure Network Plugin Directory Exists'
+
 Force Workbench Initialized:
   file.managed:
     - name: 'C:\\Users\\Default\\AppData\\Roaming\\DBeaverData\\{{ selected_edition }}\\General\\.metadata\\.plugins\\org.eclipse.ui.workbench\\workbench.xml'
@@ -150,7 +158,7 @@ Manage DBeaver Network Setting {{ key }}:
     - key: '{{ key }}'
     - name: '{{ net_prefs_path }}'
     - require:
-      - file: 'Ensure Network Plugin Directory Exists'
+      - file: 'Ensure Network Preference File Exists'
     - separator: '='
     - value: '{{ value }}'
 {%- endfor %}
