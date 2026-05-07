@@ -17,4 +17,7 @@ values:
       - name: postgresql-42.7.11.jar
         source: 'https://jdbc.postgresql.org/download/postgresql-42.7.11.jar'
   java_version: ''
+  jvm_tunes:
+    heap_max: '4096'
+    heap_initial: '1024'
 ...
