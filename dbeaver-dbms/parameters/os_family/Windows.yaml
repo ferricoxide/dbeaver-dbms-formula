@@ -1,0 +1,9 @@
+values:
+  pkg:
+    name: 'dbeaver'
+    editions:
+      community: 'https://dbeaver.io/files/dbeaver-ce-latest-x86_64-setup.exe'
+      enterprise: 'https://dbeaver.com/files/dbeaver-ee-latest-windows-x86_64.exe'
+      lite: 'https://dbeaver.com/files/dbeaver-le-latest-windows-x86_64.exe'
+      ultimate: 'https://dbeaver.com/files/dbeaver-ue-latest-windows-x86_64.exe'
+    driver_repo_path: 'C:\ProgramData\DBeaver\Drivers'

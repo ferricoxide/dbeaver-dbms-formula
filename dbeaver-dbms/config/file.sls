@@ -13,4 +13,5 @@ include:
   - dbeaver-dbms.config.lin_file
 {%- elif grains.kernel == "Windows" %}
   - dbeaver-dbms.config.win_file
+  - dbeaver-dbms.config.win_driver_seeds
 {%- endif %}

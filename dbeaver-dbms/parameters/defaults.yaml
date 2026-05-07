@@ -8,9 +8,16 @@ values:
     name: dbeaver-dbms
     download_uri: ''
     download_sig: ''
+    editions: Null
+    requested_edition: 'community'
+    driver_repo_path: ''
+    driver_seeds:
+      - name: mysql-connector-j-9.7.0.jar
+        source: 'https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/9.7.0/mysql-connector-j-9.7.0.jar'
+      - name: postgresql-42.7.11.jar
+        source: 'https://jdbc.postgresql.org/download/postgresql-42.7.11.jar'
   java_version: ''
-  rootgroup: root
-  config_dir: ''
-  service:
-    name: dbeaver-dbms
+  jvm_tunes:
+    heap_max: '4096'
+    heap_initial: '1024'
 ...
