@@ -32,6 +32,8 @@
     'dbeaver.statistics.receive.notified': 'true',
     'dbeaver.statistics.receive.skip': 'true',
     'eclipse.pluginCustomization': 'configuration/plugin_customization.ini',
+    'javax.net.ssl.trustStore': 'NONE',
+    'javax.net.ssl.trustStoreType': 'WINDOWS-ROOT',
     'osgi.instance.area.default': '@user.home/AppData/Roaming/DBeaverData/' ~ selected_edition,
     'ovirt.disableTelemetry': 'true',
     'search.eclipse.telemetry.enabled': 'false'
