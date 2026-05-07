@@ -1,21 +1,39 @@
 dbeaver-dbms
   lookup:
     pkg:
-      name:           # Optional: Overrides the default value, 'dbeaver-ce'. May
-                      # be overridden with any of:
-                      # * 'dbeaver-le': "Light" edition
-                      # * 'dbeaver-ee': "Enterprise" edition
-                      # * 'dbeaver-ue': "Ultimate" edition
-                      # Each of the above are "Pro" editions. For more
-                      # information, see https://dbeaver.com/edition/
-      download_uri:   # Optional: Overrids the default value:
-                      #   https://dbeaver.io/files/dbeaver-ce-latest-linux-x86_64.rpm
-                      # May be an `http://`, `https://` or `s3://` URI.
-      download_sig:   # Optional: URI of signature file. No default-value.
-                      # Signature files are only made available for "Pro"
-                      # editions
-    java_version:     # Optional: Desired JDK version to install. DBeaver
-                      # requires  # version 21 as minimum. This formula will
-                      # install version 25 unless otherwise specified (and will
-                      # install version 25 if the requested-version less than 21
-                      # is requested)
+      name:               # (Linux) Optional: Overrides the default value,
+                          # 'dbeaver-ce'. May be overridden with any of:
+                          # * 'dbeaver-le': "Light" edition
+                          # * 'dbeaver-ee': "Enterprise" edition
+                          # * 'dbeaver-ue': "Ultimate" edition
+                          # Each of the above are "Pro" editions. For more
+                          # information, see https://dbeaver.com/edition/
+      download_uri:       # Optional: Overrids the default value:
+                          #   https://dbeaver.io/files/dbeaver-ce-latest-linux-x86_64.rpm
+                          # May be an `http://`, `https://` or `s3://` URI.
+      download_sig:       # Optional: URI of signature file. No default-value.
+                          # Signature files are only made available for "Pro"
+                          # editions
+      requested_edition:  # (Windows) Optional: Overrides the default value,
+                          # 'community'. Any of the following values are
+                          # recognized:
+                          # * 'enterprise': "Enterprise" edition
+                          # * 'lite':       "Light"edition
+                          # * 'ultimate':   "Ultimate" edition
+                          # Each of the above are "Pro" editions. For more
+                          # information, see https://dbeaver.com/edition/
+      driver_seeds:       # (Windows) Optional: Which database-connector drivers
+                          # to "seed" users' configurations with.
+        - name: <LABEL_1> # The "name" keys should be unique within the Pillar-
+          source: <URI_1> # specification.
+        - name: <LABEL_2> #
+          source: <URI_2> # The "source" value should be a URI starting with any
+        [...ELIDED...]    # of "http://", "https://" or "s3://" and represent a
+        - name: <LABEL_N> # URI reachable by the configuration-target and
+          source: <URI_N> # represent a "JAR" file-type
+
+    java_version:         # (Linux) Optional: Desired JDK version to install.
+                          # DBeaver requires version 21 as minimum. This formula
+                          # will install version 25 unless otherwise specified
+                          # (and will install version 25 if the requested-
+                          # version is less than 21)
